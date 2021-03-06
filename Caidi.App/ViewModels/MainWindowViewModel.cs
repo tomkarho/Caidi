@@ -37,6 +37,9 @@ namespace Caidi.App.ViewModels
         {
             var selectedFiles = await GetFiles(window);
 
+            if (selectedFiles == null)
+                return;
+            
             var data  = new List<FileInfo>();
             foreach (var path in selectedFiles)
             {
