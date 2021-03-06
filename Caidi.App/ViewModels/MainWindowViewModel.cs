@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Caidi.App.Models;
+using FFMpegCore;
 
 namespace Caidi.App.ViewModels
 {
@@ -77,6 +78,13 @@ namespace Caidi.App.ViewModels
         public void OnExtractAudioClick()
         {
             Console.WriteLine("OnExtractAudioClick clicked");
+
+            foreach (var fileInfo in Files)
+            {
+                // Todo: add multi-thread support
+                var mediaInfo = FFProbe.Analyse(fileInfo.FullName);
+                FFMpeg.ExtractAudio(mediaInfo.Path, $"{mediaInfo.Path}.mp3");
+            }
         }
         
         public event PropertyChangedEventHandler? PropertyChanged;
