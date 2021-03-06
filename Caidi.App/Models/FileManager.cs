@@ -22,7 +22,8 @@ namespace Caidi.App.Models
             "mov",
             "qt",
             "flv",
-            "swfavchd"
+            "swfavchd",
+            "mkv"
         };
         
         public static  OpenFileDialog GetDialog(string directoryPath, string initialFileName)
