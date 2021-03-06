@@ -7,12 +7,53 @@
         MinWidth="480" MinHeight="640"
         x:Class="Caidi.App.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Caidi.App">
+        FontSize="16"
+        Padding="10"
+        Title="Caidi - Cross Platform Audio Extractor">
+    <Window.Styles>
+        <Style Selector="TextBlock.button">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+    </Window.Styles>
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        
+        <TextBlock
+            Grid.Row="1"
+            Grid.Column="0"
+            Text="{Binding FilesPath}">
+        </TextBlock>
+        
+        <Button
+            Classes="button"
+            Command="{Binding OnLoadFilesClick}"
+            Grid.Row="1"
+            Grid.Column="0"
+            VerticalAlignment="Bottom"
+            HorizontalAlignment="Left"
+            Content="Load files">
+        </Button>
+        
+        <Button
+            Classes="button"
+            Command="{Binding OnExtractAudioClick}"
+            Grid.Row="1"
+            Grid.Column="1"
+            VerticalAlignment="Bottom"
+            HorizontalAlignment="Right"
+            Content="Extract audio">
+        </Button>
+    </Grid>
 </Window>
