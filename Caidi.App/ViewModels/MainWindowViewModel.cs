@@ -23,8 +23,8 @@ namespace Caidi.App.ViewModels
             }
         }
         
-        private List<FileInfo> _files = new();
-        public List<FileInfo> Files
+        private List<VideoFile> _files = new();
+        public List<VideoFile> Files
         {
             get => _files;
             set
@@ -41,16 +41,19 @@ namespace Caidi.App.ViewModels
             if (selectedFiles == null)
                 return;
             
-            var data  = new List<FileInfo>();
+            var data  = new List<VideoFile>();
             foreach (var path in selectedFiles)
             {
                 if (File.Exists(path))
                 {
-                    data.Add(new FileInfo(path));
+                    data.Add(new VideoFile
+                    {
+                        File = new FileInfo(path)
+                    });
                 }
             }
             
-            SourceFolderPath = data.FirstOrDefault()?.DirectoryName;
+            SourceFolderPath = data.FirstOrDefault()?.File?.DirectoryName;
             Console.WriteLine($"Loaded {data.Count} files from {SourceFolderPath}");
             
             Files = data;
@@ -58,7 +61,7 @@ namespace Caidi.App.ViewModels
 
         private async Task<string[]> GetFiles(Window window)
         {
-            var dialog = FileManager.GetDialog(SourceFolderPath, Files?.FirstOrDefault()?.Name);
+            var dialog = FileManager.GetDialog(SourceFolderPath, Files?.FirstOrDefault()?.File.Name);
             var selectedFiles = await dialog.ShowAsync(window);
             if (selectedFiles == null)
             {
@@ -79,10 +82,10 @@ namespace Caidi.App.ViewModels
         {
             Console.WriteLine("OnExtractAudioClick clicked");
 
-            foreach (var fileInfo in Files)
+            foreach (var videoFile in Files)
             {
                 // Todo: add multi-thread support
-                var mediaInfo = FFProbe.Analyse(fileInfo.FullName);
+                var mediaInfo = FFProbe.Analyse(videoFile.File.FullName);
                 FFMpeg.ExtractAudio(mediaInfo.Path, $"{mediaInfo.Path}.mp3");
             }
         }
