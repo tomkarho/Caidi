@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Caidi.App.Models;
 using JetBrains.Annotations;
 
 namespace Caidi.App.ViewModels
@@ -13,8 +14,8 @@ namespace Caidi.App.ViewModels
     {
         public string SourceFolderPath => "";
         
-        private List<FileInfo> files = new List<FileInfo>();
-        public List<FileInfo> Files
+        private List<SourceFileDto> files = new List<SourceFileDto>();
+        public List<SourceFileDto> Files
         {
             get => files;
             set
@@ -36,12 +37,12 @@ namespace Caidi.App.ViewModels
                 return;
             }
             
-            var data  = new List<FileInfo>();
+            var data  = new List<SourceFileDto>();
             foreach (var path in filePaths)
             {
                 if (File.Exists(path))
                 {
-                    data.Add(new FileInfo(path));
+                    data.Add(new SourceFileDto(new FileInfo(path)));
                 }
             }
 
