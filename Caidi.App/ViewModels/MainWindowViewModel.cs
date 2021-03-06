@@ -3,32 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia.Controls;
+using Caidi.App.Models;
 
 namespace Caidi.App.ViewModels
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-        private static readonly List<string> MovieExtensions = new()
-        {
-            "webm",
-            "mpg",
-            "mp2",
-            "mpeg",
-            "mpe",
-            "mpv",
-            "ogg",
-            "mp4",
-            "m4p",
-            "m4v",
-            "avi",
-            "wmv",
-            "mov",
-            "qt",
-            "flv",
-            "swfavchd"
-        };
-
         private string _sourceFolderPath;
         public string SourceFolderPath
         {
@@ -37,7 +19,8 @@ namespace Caidi.App.ViewModels
             {
                 _sourceFolderPath = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SourceFolderPath)));
-            } }
+            }
+        }
         
         private List<FileInfo> _files = new();
         public List<FileInfo> Files
@@ -52,14 +35,10 @@ namespace Caidi.App.ViewModels
 
         public async void OnLoadFilesClick(Window window)
         {
-            var dialog = GetDialog();
+            var selectedFiles = await GetFiles(window);
 
-            var selectedFiles = await dialog.ShowAsync(window);
             if (selectedFiles == null)
-            {
-                Console.WriteLine("File dialog cancelled by user");
                 return;
-            }
             
             var data  = new List<FileInfo>();
             foreach (var path in selectedFiles)
@@ -76,20 +55,23 @@ namespace Caidi.App.ViewModels
             Files = data;
         }
 
-        private OpenFileDialog GetDialog()
+        private async Task<string[]> GetFiles(Window window)
         {
-            return new()
+            var dialog = FileManager.GetDialog(SourceFolderPath, Files?.FirstOrDefault()?.Name);
+            var selectedFiles = await dialog.ShowAsync(window);
+            if (selectedFiles == null)
             {
-                Title = "Choose video files",
-                AllowMultiple = true,
-                Filters = new List<FileDialogFilter>
-                {
-                    // Todo: mimetype would be more appropriate way to determine which is a video file
-                    new() {Name = "Videos", Extensions = MovieExtensions},
-                },
-                Directory = SourceFolderPath,
-                InitialFileName = Files?.FirstOrDefault()?.Name
-            };
+                Console.WriteLine("File dialog cancelled by user");
+                return null;
+            }
+
+            if (!selectedFiles.Any())
+            {
+                Console.WriteLine("No files where selected");
+                return null;
+            }
+
+            return selectedFiles;
         }
 
         public void OnExtractAudioClick()
