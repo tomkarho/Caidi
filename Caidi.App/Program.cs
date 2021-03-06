@@ -1,7 +1,5 @@
-﻿using System;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Logging.Serilog;
+﻿using Avalonia;
+using Avalonia.Dialogs;
 using Avalonia.ReactiveUI;
 
 namespace Caidi.App

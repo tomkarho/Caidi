@@ -3,52 +3,99 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using Caidi.App.Models;
-using JetBrains.Annotations;
+using Avalonia.Controls;
 
 namespace Caidi.App.ViewModels
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-        public string SourceFolderPath => "";
-        
-        private List<SourceFileDto> files = new List<SourceFileDto>();
-        public List<SourceFileDto> Files
+        private static readonly List<string> MovieExtensions = new()
         {
-            get => files;
+            "webm",
+            "mpg",
+            "mp2",
+            "mpeg",
+            "mpe",
+            "mpv",
+            "ogg",
+            "mp4",
+            "m4p",
+            "m4v",
+            "avi",
+            "wmv",
+            "mov",
+            "qt",
+            "flv",
+            "swfavchd"
+        };
+
+        private string _sourceFolderPath;
+        public string SourceFolderPath
+        {
+            get => _sourceFolderPath;
             set
             {
-                files = value;
+                _sourceFolderPath = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SourceFolderPath)));
+            } }
+        
+        private List<FileInfo> _files = new();
+        public List<FileInfo> Files
+        {
+            get => _files;
+            set
+            {
+                _files = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Files)));
             }
         }
 
-        public void OnLoadFilesClick()
+        public async void OnLoadFilesClick(Window window)
         {
-            Console.WriteLine($"Getting files from {SourceFolderPath}");
-            var filePaths = Directory.GetFiles(SourceFolderPath);
+            var dialog = GetDialog();
 
-            // Reset files list when files are found
-            if (!filePaths.Any())
+            var selectedFiles = await dialog.ShowAsync(window);
+            if (selectedFiles == null)
             {
-                Console.WriteLine($"No files found in location '{SourceFolderPath}'");
+                Console.WriteLine("File dialog cancelled by user");
                 return;
             }
             
-            var data  = new List<SourceFileDto>();
-            foreach (var path in filePaths)
+            var data  = new List<FileInfo>();
+            foreach (var path in selectedFiles)
             {
                 if (File.Exists(path))
                 {
-                    data.Add(new SourceFileDto(new FileInfo(path)));
+                    data.Add(new FileInfo(path));
                 }
             }
-
+            
+            SourceFolderPath = data.FirstOrDefault()?.DirectoryName;
+            Console.WriteLine($"Loaded {data.Count} files from {SourceFolderPath}");
+            
             Files = data;
         }
-        public void OnExtractAudioClick() => Console.WriteLine("OnExtractAudioClick clicked");
+
+        private OpenFileDialog GetDialog()
+        {
+            return new()
+            {
+                Title = "Choose video files",
+                AllowMultiple = true,
+                Filters = new List<FileDialogFilter>
+                {
+                    // Todo: mimetype would be more appropriate way to determine which is a video file
+                    new() {Name = "Videos", Extensions = MovieExtensions},
+                },
+                Directory = SourceFolderPath,
+                InitialFileName = Files?.FirstOrDefault()?.Name
+            };
+        }
+
+        public void OnExtractAudioClick()
+        {
+            Console.WriteLine("OnExtractAudioClick clicked");
+        }
         
         public event PropertyChangedEventHandler? PropertyChanged;
     }

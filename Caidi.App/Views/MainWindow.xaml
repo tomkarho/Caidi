@@ -5,15 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         MinWidth="720" MinHeight="640"
+        Name="MainWindow"
         x:Class="Caidi.App.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         FontSize="16"
         Padding="10"
         Title="Caidi - Cross Platform Audio Extractor">
     <Window.Styles>
-        <Style Selector="TextBlock.button">
-            <Setter Property="FontSize" Value="24"/>
-            <Setter Property="FontWeight" Value="Bold"/>
+        <Style Selector="Button">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Padding" Value="10 6"/>
         </Style>
     </Window.Styles>
 
@@ -22,52 +23,50 @@
     </Design.DataContext>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="1*"></RowDefinition>
             <RowDefinition Height="10*"></RowDefinition>
             <RowDefinition Height="2*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
+        
+        <Grid
+            Grid.Row="0"
+            Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                Text="{Binding SourceFolderPath}"></TextBlock>
+            <Button
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Right"
+                CommandParameter="{Binding ElementName=MainWindow}"
+                Command="{Binding OnLoadFilesClick, Mode=OneWay}"
+                Content="Load files">
+            </Button>
+            
+        </Grid>
         
         <ListBox
-            Grid.Row="0"
+            Grid.Row="1"
             Grid.Column="0"
-            Grid.ColumnSpan="2"
             Items="{Binding Files}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox
-                            Margin="0 0 10 0"
-                            IsChecked="{Binding Checked}"></CheckBox>
-                        <TextBlock Text="{Binding File.Name}"></TextBlock>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{Binding Name}"></TextBlock>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
         
-        <TextBlock
-            Grid.Row="1"
-            Grid.Column="0"
-            Text="{Binding SourceFolderPath}">
-        </TextBlock>
-        
         <Button
-            Classes="button"
-            Command="{Binding OnLoadFilesClick}"
-            Grid.Row="1"
-            Grid.Column="0"
-            VerticalAlignment="Bottom"
-            HorizontalAlignment="Left"
-            Content="Load files">
-        </Button>
-        
-        <Button
-            Classes="button"
             Command="{Binding OnExtractAudioClick}"
-            Grid.Row="1"
-            Grid.Column="1"
+            Grid.Row="2"
             VerticalAlignment="Bottom"
             HorizontalAlignment="Right"
             Content="Extract audio">
