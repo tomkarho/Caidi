@@ -10,66 +10,86 @@
         Icon="/Assets/avalonia-logo.ico"
         FontSize="16"
         Padding="10"
+        Background="#f7f7f7"
         Title="Caidi - Cross Platform Audio Extractor">
     <Window.Styles>
         <Style Selector="Button">
-            <Setter Property="FontSize" Value="18"/>
-            <Setter Property="Padding" Value="10 6"/>
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="Padding" Value="10 6" />
+            <Setter Property="Foreground" Value="white" />
+        </Style>
+        <Style Selector="Button.green">
+            <Setter Property="Background" Value="#21ad09" />
+        </Style>
+        <Style Selector="Button.blue">
+            <Setter Property="Background" Value="#134e9c" />
         </Style>
     </Window.Styles>
 
     <Design.DataContext>
-        <vm:MainWindowViewModel/>
+        <vm:MainWindowViewModel />
     </Design.DataContext>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"></RowDefinition>
-            <RowDefinition Height="10*"></RowDefinition>
-            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="10*" />
+            <RowDefinition Height="2*" />
         </Grid.RowDefinitions>
-        
+
         <Grid
             Grid.Row="0"
             Grid.Column="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            
+
             <TextBlock
                 Grid.Column="0"
                 VerticalAlignment="Center"
-                Text="{Binding SourceFolderPath}"></TextBlock>
-            <Button
-                Grid.Column="1"
+                Text="{Binding SourceFolderPath}" />
+            <Border
                 VerticalAlignment="Center"
                 HorizontalAlignment="Right"
-                CommandParameter="{Binding ElementName=MainWindow}"
-                Command="{Binding OnLoadFilesClick, Mode=OneWay}"
-                Content="Load files">
-            </Button>
-            
+                Grid.Column="1"
+                BorderBrush="#134e9c"
+                BorderThickness="2"
+                CornerRadius="3">
+                <Button
+                    Classes="blue"
+                    BorderThickness="0"
+                    CommandParameter="{Binding ElementName=MainWindow}"
+                    Command="{Binding OnLoadFilesClick, Mode=OneWay}"
+                    Content="Load files" />
+            </Border>
         </Grid>
-        
         <ListBox
+            BorderBrush="#969696"
+            Background="white"
             Grid.Row="1"
             Grid.Column="0"
             Items="{Binding Files}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Vertical">
-                        <TextBlock Text="{Binding Name}"></TextBlock>
+                        <TextBlock Text="{Binding Name}" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        
-        <Button
-            Command="{Binding OnExtractAudioClick}"
-            Grid.Row="2"
+
+        <Border
             VerticalAlignment="Bottom"
             HorizontalAlignment="Right"
-            Content="Extract audio">
-        </Button>
+            Grid.Row="2"
+            BorderBrush="#21ad09"
+            BorderThickness="2"
+            CornerRadius="3">
+            <Button
+                BorderThickness="0"
+                Classes="green"
+                Command="{Binding OnExtractAudioClick}"
+                Content="Extract audio" />
+        </Border>
     </Grid>
 </Window>
