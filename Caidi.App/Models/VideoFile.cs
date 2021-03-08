@@ -6,7 +6,8 @@ namespace Caidi.App.Models
     {
         NotStarted,
         Started,
-        Finished
+        Success,
+        Failure
     }
     
     public class VideoFile

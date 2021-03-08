@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Caidi.App.Models;
+using DynamicData;
 using FFMpegCore;
 
 namespace Caidi.App.ViewModels
@@ -81,15 +82,33 @@ namespace Caidi.App.ViewModels
         public void OnExtractAudioClick()
         {
             Console.WriteLine("OnExtractAudioClick clicked");
+            var tasks = Files.Select(videoFile => Task.Run(() => ExtractAudio(videoFile))).ToList();
+            Task.WhenAll(tasks).ContinueWith((completed) => Console.WriteLine("All files extracted"));
+        }
 
-            foreach (var videoFile in Files)
+        private void ExtractAudio(VideoFile videoFile)
+        {
+            Console.WriteLine($"Starting processing {videoFile.File.Name}");
+            var mediaInfo = FFProbe.Analyse(videoFile.File.FullName);
+
+            if (mediaInfo == null)
             {
-                // Todo: add multi-thread support
-                var mediaInfo = FFProbe.Analyse(videoFile.File.FullName);
-                FFMpeg.ExtractAudio(mediaInfo.Path, $"{mediaInfo.Path}.mp3");
+                Console.WriteLine($"Invalid file {videoFile.File.Name}");
+                return;
+            }
+                    
+            var success = FFMpeg.ExtractAudio(mediaInfo.Path, $"{mediaInfo.Path}.mp3");
+
+            if (success)
+            {
+                Console.WriteLine($"{videoFile.File.Name} converted");
+            }
+            else
+            {
+                Console.WriteLine($"{videoFile.File.Name} processing failed");
             }
         }
-        
+
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }
