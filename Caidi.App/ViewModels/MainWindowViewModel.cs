@@ -89,6 +89,7 @@ namespace Caidi.App.ViewModels
         private void ExtractAudio(VideoFile videoFile)
         {
             Console.WriteLine($"Starting processing {videoFile.File.Name}");
+            videoFile.ConversionStatus = ConversionStatus.Started;
             var mediaInfo = FFProbe.Analyse(videoFile.File.FullName);
 
             if (mediaInfo == null)
@@ -102,10 +103,12 @@ namespace Caidi.App.ViewModels
             if (success)
             {
                 Console.WriteLine($"{videoFile.File.Name} converted");
+                videoFile.ConversionStatus = ConversionStatus.Success;
             }
             else
             {
                 Console.WriteLine($"{videoFile.File.Name} processing failed");
+                videoFile.ConversionStatus = ConversionStatus.Failure;
             }
         }
 
