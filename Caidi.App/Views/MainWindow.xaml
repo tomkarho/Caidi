@@ -71,8 +71,8 @@
             Items="{Binding Files}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock Text="{Binding ConversionStatus}"></TextBlock>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding StatusIcon}" Height="32" Width="32" />
                         <TextBlock Text="{Binding File.Name}" />
                     </StackPanel>
                 </DataTemplate>
