@@ -7,7 +7,7 @@
         MinWidth="720" MinHeight="640"
         Name="MainWindow"
         x:Class="Caidi.App.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/logo.png"
         FontSize="16"
         Padding="10"
         Background="#f7f7f7"
